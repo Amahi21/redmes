@@ -1,6 +1,8 @@
 import json
 
 from telethon import TelegramClient, events
+import io
+from PIL import Image
 
 with open('settings.json') as conf:
     config = json.load(conf)
@@ -18,6 +20,10 @@ if __name__ == '__main__':
         s_user_id = event.message.to_dict()['from_id']
         users_id = s_user_id.get('user_id')
         user = users.get(str(users_id) + str(event.message.to_dict()['peer_id'].get('chat_id')))
+
+        photo = event.message.to_dict()['media']['photo']['file_reference']
+        image = io.BytesIO(photo)
+        imageFile = Image.open(image)
 
         await client.send_message(config['userOutput'], user + "Message: " + user_mess)
 
